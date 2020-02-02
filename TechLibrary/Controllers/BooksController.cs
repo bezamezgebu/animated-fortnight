@@ -25,15 +25,24 @@ namespace TechLibrary.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetBooks(int start, int count)
         {
             _logger.LogInformation("Get all books");
 
             var books = await _bookService.GetBooksAsync();
 
-            var bookResponse = _mapper.Map<List<BookResponse>>(books);
+            if (start != 0 && count != 0)
+            {
+                if (count < 1)
+                {
+                    return BadRequest("count parameter must be greater than 0");
+                }
+                books = books.GetRange(start - 1, count);
+            }
 
-            return Ok(bookResponse);
+            var bookResponseList = _mapper.Map<List<BookResponse>>(books);
+
+            return Ok(bookResponseList);
         }
 
         [HttpGet("{id}")]
