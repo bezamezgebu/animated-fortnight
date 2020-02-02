@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using TechLibrary.Models;
 using TechLibrary.Domain;
 using TechLibrary.Services;
+using TechLibrary.MappingProfiles;
 
 namespace TechLibrary.Controllers.Tests
 {
@@ -21,6 +22,7 @@ namespace TechLibrary.Controllers.Tests
         private  Mock<ILogger<BooksController>> _mockLogger;
         private  Mock<IBookService> _mockBookService;
         private  Mock<IMapper> _mockMapper;
+        private IMapper _mapper;
         private NullReferenceException _expectedException;
 
         [OneTimeSetUp]
@@ -30,6 +32,10 @@ namespace TechLibrary.Controllers.Tests
             _mockLogger = new Mock<ILogger<BooksController>>();
             _mockBookService = new Mock<IBookService>();
             _mockMapper = new Mock<IMapper>();
+
+            var mapperProfile = new DomainToResponseProfile();
+            var configuration = new MapperConfiguration(cfg => cfg.AddProfile(mapperProfile));
+            _mapper = new Mapper(configuration);
         }
 
         [SetUp]
@@ -43,7 +49,7 @@ namespace TechLibrary.Controllers.Tests
         {
             //  Arrange
             _mockBookService.Setup(b => b.GetBooksAsync()).Returns(Task.FromResult(It.IsAny<List<Domain.Book>>()));
-            var sut = new BooksController(_mockLogger.Object, _mockBookService.Object, _mockMapper.Object);
+            var sut = new BooksController(_mockLogger.Object, _mockBookService.Object, _mapper);
 
             //  Act
             var result = await sut.GetBooks(0, 0);
@@ -63,7 +69,7 @@ namespace TechLibrary.Controllers.Tests
             };
             _mockBookService.Setup(s => s.GetBooksAsync()).ReturnsAsync(books);
 
-            var sut = new BooksController(_mockLogger.Object, _mockBookService.Object, _mockMapper.Object);
+            var sut = new BooksController(_mockLogger.Object, _mockBookService.Object, _mapper);
 
             //  Act
             var result = await sut.GetBooks(1, 1);
@@ -82,6 +88,8 @@ namespace TechLibrary.Controllers.Tests
 
             // verify that 1 item was returned
             Assert.That(okResult.Value is List<BookResponse>);
+            var returnedList = okResult.Value as List<BookResponse>;
+            Assert.That(returnedList.Count, Is.EqualTo(1));
         }
 
         [Test()]
