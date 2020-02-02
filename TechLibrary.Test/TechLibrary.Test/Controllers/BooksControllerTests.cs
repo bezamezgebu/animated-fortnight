@@ -116,5 +116,112 @@ namespace TechLibrary.Controllers.Tests
             // verify that the response was 200 OK
             Assert.That(okResult.StatusCode, Is.EqualTo(StatusCodes.Status200OK));
         }
+
+        [Test()]
+        public async Task GetWithMatchingSearchTitle()
+        {
+            //  Arrange
+            var books = new List<Book>
+            {
+              new Book { BookId = 1, Title = "The Great Gatsby" },
+              new Book { BookId = 2, Title = "War and Peace" },
+              new Book { BookId = 3, Title = "Unity of Problems" }
+            };
+            _mockBookService.Setup(s => s.GetBooksAsync()).ReturnsAsync(books);
+
+            var sut = new BooksController(_mockLogger.Object, _mockBookService.Object, _mapper);
+
+            //  Act
+            var result = await sut.GetBooksByTitle("Unity");
+
+            //  Assert
+            _mockBookService.Verify(s => s.GetBooksAsync(), Times.Once, "Expected GetBooksAsync to have been called once");
+
+            var okResult = result as OkObjectResult;
+
+            // ensure that the cast to OkObjectResult succeeded
+            Assert.IsNotNull(okResult);
+            Assert.That(okResult is OkObjectResult);
+
+            // verify that the response was 200 OK
+            Assert.That(okResult.StatusCode, Is.EqualTo(StatusCodes.Status200OK));
+
+            // verify that 1 item was returned
+            Assert.That(okResult.Value is List<BookResponse>);
+            var returnedList = okResult.Value as List<BookResponse>;
+            Assert.That(returnedList.Count, Is.EqualTo(1));
+        }
+
+        [Test()]
+        public async Task GetWithMatchingSearchTitleButDifferentCasing()
+        {
+            //  Arrange
+            var books = new List<Book>
+            {
+              new Book { BookId = 1, Title = "The Great Gatsby" },
+              new Book { BookId = 2, Title = "War and Peace" },
+              new Book { BookId = 3, Title = "Unity of Problems" }
+            };
+            _mockBookService.Setup(s => s.GetBooksAsync()).ReturnsAsync(books);
+
+            var sut = new BooksController(_mockLogger.Object, _mockBookService.Object, _mapper);
+
+            //  Act
+            var result = await sut.GetBooksByTitle("uNiTy");
+
+            //  Assert
+            _mockBookService.Verify(s => s.GetBooksAsync(), Times.Once, "Expected GetBooksAsync to have been called once");
+
+            var okResult = result as OkObjectResult;
+
+            // ensure that the cast to OkObjectResult succeeded
+            Assert.IsNotNull(okResult);
+            Assert.That(okResult is OkObjectResult);
+
+            // verify that the response was 200 OK
+            Assert.That(okResult.StatusCode, Is.EqualTo(StatusCodes.Status200OK));
+
+            // verify that 1 item was returned
+            Assert.That(okResult.Value is List<BookResponse>);
+            var returnedList = okResult.Value as List<BookResponse>;
+            Assert.That(returnedList.Count, Is.EqualTo(1));
+        }
+
+        [Test()]
+        public async Task GetWithNoMatchingSearchTitle()
+        {
+            //  Arrange
+            var books = new List<Book>
+            {
+              new Book { BookId = 1, Title = "The Great Gatsby" },
+              new Book { BookId = 2, Title = "War and Peace" },
+              new Book { BookId = 3, Title = "Unity of Problems" }
+            };
+            _mockBookService.Setup(s => s.GetBooksAsync()).ReturnsAsync(books);
+
+            var sut = new BooksController(_mockLogger.Object, _mockBookService.Object, _mapper);
+
+            //  Act
+            var result = await sut.GetBooksByTitle("hseknf");
+
+            //  Assert
+            _mockBookService.Verify(s => s.GetBooksAsync(), Times.Once, "Expected GetBooksAsync to have been called once");
+
+            var okResult = result as OkObjectResult;
+
+            // ensure that the cast to OkObjectResult succeeded
+            Assert.IsNotNull(okResult);
+            Assert.That(okResult is OkObjectResult);
+
+            // verify that the response was 200 OK
+            Assert.That(okResult.StatusCode, Is.EqualTo(StatusCodes.Status200OK));
+
+            // verify that 1 item was returned
+            Assert.That(okResult.Value is List<BookResponse>);
+            var returnedList = okResult.Value as List<BookResponse>;
+            Assert.That(returnedList.Count, Is.EqualTo(0));
+        }
+
+
     }
 }

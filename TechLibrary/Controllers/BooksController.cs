@@ -69,7 +69,7 @@ namespace TechLibrary.Controllers
             foreach (Book book in allBooks)
             {
                 //if the book title contains the searched title add to the filterd list
-                if (book.Title.Contains(title))
+                if (book.Title.ToLower().Contains(title.ToLower()))
                 {
                     filteredList.Add(book);
                 }
