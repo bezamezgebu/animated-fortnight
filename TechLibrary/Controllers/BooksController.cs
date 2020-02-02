@@ -37,7 +37,17 @@ namespace TechLibrary.Controllers
                 {
                     return BadRequest("count parameter must be greater than 0");
                 }
-                books = books.GetRange(start - 1, count);
+
+                // if count is greater than the number of items between books[start-1] and books[books.Count]
+                // then just return the remaining items
+                if (count > books.Count - start)
+                {
+                    books = books.GetRange(start - 1, books.Count - start + 1);
+                }
+                else
+                {
+                    books = books.GetRange(start - 1, count);
+                }
             }
 
             var bookResponseList = _mapper.Map<List<BookResponse>>(books);

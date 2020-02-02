@@ -56,7 +56,11 @@ namespace TechLibrary.Controllers.Tests
         public async Task GetWithValidStartAndCount()
         {
             //  Arrange
-            var books = new List<Book> { new Book { BookId = 1 } };
+            var books = new List<Book>
+            {
+              new Book { BookId = 1 },
+              new Book { BookId = 2 }
+            };
             _mockBookService.Setup(s => s.GetBooksAsync()).ReturnsAsync(books);
 
             var sut = new BooksController(_mockLogger.Object, _mockBookService.Object, _mockMapper.Object);
@@ -76,8 +80,33 @@ namespace TechLibrary.Controllers.Tests
             // verify that the response was 200 OK
             Assert.That(okResult.StatusCode, Is.EqualTo(StatusCodes.Status200OK));
 
-            // verify that the result contains 4 items
-            // Assert.That(okResult.)
+            // verify that 1 item was returned
+            Assert.That(okResult.Value is List<BookResponse>);
+        }
+
+        [Test()]
+        public async Task GetWithCountGreaterThanRemainingItems()
+        {
+            //  Arrange
+            var books = new List<Book> { new Book { BookId = 1 } };
+            _mockBookService.Setup(s => s.GetBooksAsync()).ReturnsAsync(books);
+
+            var sut = new BooksController(_mockLogger.Object, _mockBookService.Object, _mockMapper.Object);
+
+            //  Act
+            var result = await sut.GetBooks(1, 2);
+
+            //  Assert
+            _mockBookService.Verify(s => s.GetBooksAsync(), Times.Once, "Expected GetBooksAsync to have been called once");
+
+            var okResult = result as OkObjectResult;
+
+            // ensure that the cast to OkObjectResult succeeded
+            Assert.IsNotNull(okResult);
+            Assert.That(okResult is OkObjectResult);
+
+            // verify that the response was 200 OK
+            Assert.That(okResult.StatusCode, Is.EqualTo(StatusCodes.Status200OK));
         }
     }
 }
