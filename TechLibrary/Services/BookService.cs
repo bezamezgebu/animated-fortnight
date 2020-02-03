@@ -13,6 +13,8 @@ namespace TechLibrary.Services
     {
         Task<List<Book>> GetBooksAsync();
         Task<Book> GetBookByIdAsync(int bookid);
+
+        Task UpdateBook(int bookid, Book updatedBook);
     }
 
     public class BookService : IBookService
@@ -34,6 +36,27 @@ namespace TechLibrary.Services
         public async Task<Book> GetBookByIdAsync(int bookid)
         {
             return await _dataContext.Books.SingleOrDefaultAsync(x => x.BookId == bookid);
+        }
+
+        public async Task UpdateBook(int bookid, Book updatedBook)
+        {
+            updatedBook.BookId = bookid;
+
+            var book = GetBookByIdAsync(bookid);
+            if (book == null)
+            {
+                throw new ArgumentException();
+            }
+
+            // update properties of book with values from updatedBook
+            book.Result.Title = updatedBook.Title;
+            book.Result.ISBN = updatedBook.ISBN;
+            book.Result.PublishedDate = updatedBook.PublishedDate;
+            book.Result.ThumbnailUrl = updatedBook.ThumbnailUrl;
+            book.Result.LongDescr = updatedBook.LongDescr;
+            book.Result.ShortDescr = updatedBook.ShortDescr;
+
+            await _dataContext.SaveChangesAsync();
         }
     }
 }

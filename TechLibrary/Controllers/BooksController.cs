@@ -8,6 +8,7 @@ using TechLibrary.Models;
 using TechLibrary.Services;
 using System.Linq;
 using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore;
 
 namespace TechLibrary.Controllers
 {
@@ -91,6 +92,17 @@ namespace TechLibrary.Controllers
             var bookResponse = _mapper.Map<BookResponse>(book);
 
             return Ok(bookResponse);
+        }
+
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateById(int id, [FromBody]Book book)
+        {
+            _logger.LogInformation("update book");
+
+            await _bookService.UpdateBook(id, book);
+
+            return Ok();
         }
     }
 }
