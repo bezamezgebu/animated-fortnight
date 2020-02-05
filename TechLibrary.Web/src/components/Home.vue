@@ -28,7 +28,7 @@
         <div id="pager-buttons">
             <b-button v-on:click="startItem -= 10" :disabled="isPrevButtonDisabled" variant="primary">Previous page</b-button>
             <b-button v-on:click="startItem += 10" :disabled="isNextButtonDisabled" variant="primary">Next page</b-button>
-            <p>Displaying items {{ startItem }} - {{ startItem + books.length }}</p>
+            <p>Displaying items {{ startItem }} - {{ startItem + books.length - 1 }}</p>
         </div>
 
 
