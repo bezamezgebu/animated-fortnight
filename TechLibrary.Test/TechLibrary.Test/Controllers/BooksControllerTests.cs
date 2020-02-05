@@ -118,6 +118,30 @@ namespace TechLibrary.Controllers.Tests
         }
 
         [Test()]
+        public async Task GetWithStartGreaterThanTotalItems()
+        {
+            //  Arrange
+            var books = new List<Book> { new Book { BookId = 1 } };
+            _mockBookService.Setup(s => s.GetBooksAsync()).ReturnsAsync(books);
+
+            var sut = new BooksController(_mockLogger.Object, _mockBookService.Object, _mockMapper.Object);
+
+            //  Act
+            var result = await sut.GetBooks(2, 1);
+
+            //  Assert
+            _mockBookService.Verify(s => s.GetBooksAsync(), Times.Once, "Expected GetBooksAsync to have been called once");
+
+            var okResult = result as OkObjectResult;
+
+            // ensure that the cast to OkObjectResult succeeded
+            Assert.IsNotNull(okResult);
+            Assert.That(okResult is OkObjectResult);
+
+            // verify that the response was 200 OK
+            Assert.That(okResult.StatusCode, Is.EqualTo(StatusCodes.Status200OK));
+        }
+        [Test()]
         public async Task GetWithMatchingSearchTitle()
         {
             //  Arrange

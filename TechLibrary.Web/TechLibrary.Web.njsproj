@@ -41,6 +41,7 @@
     <Content Include="src\routes.js">
       <SubType>Code</SubType>
     </Content>
+    <Content Include="vue.config.js" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="dist\" />
