@@ -31,7 +31,6 @@
             <p>Displaying items {{ startItem }} - {{ startItem + books.length - 1 }}</p>
         </div>
 
-
     </div>
 </template>
 
