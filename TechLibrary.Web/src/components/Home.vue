@@ -5,10 +5,9 @@
             <b-input-group-append>
                 <b-button variant="primary" v-on:click="updateAndRefresh">Search</b-button>
                 <b-button variant="primary" v-on:click="clearSearch">Clear search</b-button>
-
             </b-input-group-append>
         </div>
-        <h1>{{ msg }}</h1>
+        <h1 v-if="noBooks">No results to display.</h1>
 
         <b-table id="table"
                  ref="table"
@@ -69,6 +68,9 @@
             },
             isNextButtonDisabled: function () {
                 return this.books.length < 10;
+            },
+            noBooks: function () {
+                return this.books === null || this.books.length === 0;
             }
         },
 
@@ -81,9 +83,6 @@
                 else {
                     url = `https://localhost:5001/books/search?title=${this.searchText}`;
                 }
-
-                // reset searchText
-                //this.searchText = "";
 
                 const promise = axios.get(url);
 
