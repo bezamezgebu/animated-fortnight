@@ -96,9 +96,11 @@ namespace TechLibrary.Controllers
 
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateById(int id, [FromBody]Book book)
+        public async Task<IActionResult> UpdateById(int id, [FromBody]BookRequest bookRequest)
         {
             _logger.LogInformation("update book");
+
+            var book = _mapper.Map<Book>(bookRequest);
 
             await _bookService.UpdateBook(id, book);
 

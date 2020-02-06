@@ -1,6 +1,6 @@
 ﻿namespace TechLibrary.Models
 {
-    public class BookResponse
+    public class BookRequest
     {
         public int BookId { get; set; }
         public string Title { get; set; }
