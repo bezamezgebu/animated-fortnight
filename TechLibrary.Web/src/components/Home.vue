@@ -1,7 +1,7 @@
 <template>
     <div class="home">
         <div>
-            <b-form-input v-model="searchText" placeholder="Search by title..."></b-form-input>
+            <b-form-input v-model="searchText" @keydown.enter.native="enterHandler" placeholder="Search by title..."></b-form-input>
             <b-input-group-append>
                 <b-button variant="primary" v-on:click="updateAndRefresh">Search</b-button>
                 <b-button variant="primary" v-on:click="clearSearch">Clear search</b-button>
@@ -102,6 +102,10 @@
 
             clearSearch() {
                 this.searchText = "";
+                this.updateAndRefresh();
+            },
+
+            enterHandler() {
                 this.updateAndRefresh();
             }
         }   
