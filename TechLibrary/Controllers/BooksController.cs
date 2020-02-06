@@ -35,11 +35,11 @@ namespace TechLibrary.Controllers
 
             var books = await _bookService.GetBooksAsync();
 
-            if (start != 0 && count != 0)
+            if (! (start == 0 && count == 0)) // client has requested paging
             {
-                if (count < 1)
+                if (count < 1 || start < 1 )
                 {
-                    return BadRequest("count parameter must be greater than 0");
+                    return BadRequest("start and count parameters must both be greater than 0");
                 }
 
                 // if count is greater than the number of items between books[start-1] and books[books.Count]

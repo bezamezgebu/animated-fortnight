@@ -93,6 +93,80 @@ namespace TechLibrary.Controllers.Tests
         }
 
         [Test()]
+        public async Task GetWithInvalidCount()
+        {
+            //  Arrange
+            var books = new List<Book> { new Book { BookId = 1 } };
+            _mockBookService.Setup(s => s.GetBooksAsync()).ReturnsAsync(books);
+
+            var sut = new BooksController(_mockLogger.Object, _mockBookService.Object, _mockMapper.Object);
+
+            //  Act
+            var result = await sut.GetBooks(1,-2);
+
+            //  Assert
+            _mockBookService.Verify(s => s.GetBooksAsync(), Times.Once, "Expected GetBooksAsync to have been called once");
+
+            var badRequestResult = result as BadRequestObjectResult;
+
+            // ensure that the cast to OkObjectResult succeeded
+            Assert.IsNotNull(badRequestResult);
+            //Assert.That(badRequestResult is OkObjectResult);
+
+            // verify that the response was 400
+            Assert.That(badRequestResult.StatusCode, Is.EqualTo(StatusCodes.Status400BadRequest));
+        }
+
+        [Test()]
+        public async Task GetWithInvalidStart()
+        {
+            //  Arrange
+            var books = new List<Book> { new Book { BookId = 1 } };
+            _mockBookService.Setup(s => s.GetBooksAsync()).ReturnsAsync(books);
+
+            var controller = new BooksController(_mockLogger.Object, _mockBookService.Object, _mockMapper.Object);
+
+            //  Act
+            var result = await controller.GetBooks(-3, 1);
+
+            //  Assert
+            _mockBookService.Verify(s => s.GetBooksAsync(), Times.Once, "Expected GetBooksAsync to have been called once");
+
+            var badRequestResult = result as BadRequestObjectResult;
+
+            // ensure that the cast to OkObjectResult succeeded
+            Assert.IsNotNull(badRequestResult);
+            //Assert.That(badRequestResult is OkObjectResult);
+
+            // verify that the response was 400
+            Assert.That(badRequestResult.StatusCode, Is.EqualTo(StatusCodes.Status400BadRequest));
+        }
+
+        [Test()]
+        public async Task GetWithStartEqualToZero()
+        {
+            //  Arrange
+            var books = new List<Book> { new Book { BookId = 1 } };
+            _mockBookService.Setup(s => s.GetBooksAsync()).ReturnsAsync(books);
+
+            var controller = new BooksController(_mockLogger.Object, _mockBookService.Object, _mockMapper.Object);
+
+            //  Act
+            var result = await controller.GetBooks(0, 1);
+
+            //  Assert
+            _mockBookService.Verify(s => s.GetBooksAsync(), Times.Once, "Expected GetBooksAsync to have been called once");
+
+            var badRequestResult = result as BadRequestObjectResult;
+
+            // ensure that the cast to OkObjectResult succeeded
+            Assert.IsNotNull(badRequestResult);
+            Assert.That(badRequestResult is BadRequestObjectResult);
+
+            // verify that the response was 400
+            Assert.That(badRequestResult.StatusCode, Is.EqualTo(StatusCodes.Status400BadRequest));
+        }
+        [Test()]
         public async Task GetWithCountGreaterThanRemainingItems()
         {
             //  Arrange
