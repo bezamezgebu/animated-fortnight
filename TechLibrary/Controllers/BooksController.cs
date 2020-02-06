@@ -35,9 +35,9 @@ namespace TechLibrary.Controllers
 
             var books = await _bookService.GetBooksAsync();
 
-            if (! (start == 0 && count == 0)) // client has requested paging
+            if (!(start == 0 && count == 0)) // client has requested paging
             {
-                if (count < 1 || start < 1 )
+                if (count < 1 || start < 1)
                 {
                     return BadRequest("start and count parameters must both be greater than 0");
                 }
@@ -80,7 +80,7 @@ namespace TechLibrary.Controllers
 
             return Ok(bookResponseList);
         }
-        
+
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
@@ -106,5 +106,19 @@ namespace TechLibrary.Controllers
 
             return Ok();
         }
+
+        [HttpPost("create")]        
+        public async Task<IActionResult> createBook([FromBody]Book book)
+        {
+            _logger.LogInformation("create book");
+
+            var newBook = _mapper.Map<Book>(book);
+
+            await _bookService.createBook(newBook);
+
+            return Ok();
+        }
+
+
     }
 }
