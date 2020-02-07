@@ -60,7 +60,7 @@ namespace TechLibrary.Controllers
         }
 
         [HttpGet("search")]
-        public async Task<IActionResult> GetBooksByTitle(string title)
+        public async Task<IActionResult> GetBooksByTitle(string title, int start, int count)
         {
             _logger.LogInformation("Get book by title");
 
@@ -75,6 +75,24 @@ namespace TechLibrary.Controllers
                     filteredList.Add(book);
                 }
             }
+
+            if (!(start == 0 && count == 0)) // client has requested paging
+            {
+                if (count < 1 || start < 1)
+                {
+                    return BadRequest("start and count parameters must both be greater than 0");
+                }
+
+                if (count > filteredList.Count - start)
+                {
+                    filteredList = filteredList.GetRange(start - 1, filteredList.Count - start + 1);
+                }
+                else
+                {
+                    filteredList = filteredList.GetRange(start - 1, count);
+                }
+            }
+
 
             var bookResponseList = _mapper.Map<List<BookResponse>>(filteredList);
 

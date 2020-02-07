@@ -83,7 +83,7 @@
                     url = `https://localhost:5001/books?start=${this.startItem}&count=${this.perPage}`;
                 }
                 else {
-                    url = `https://localhost:5001/books/search?title=${this.searchText}`;
+                    url = `https://localhost:5001/books/search?title=${this.searchText}&start=${this.startItem}&count=${this.perPage}`;
                 }
 
                 const promise = axios.get(url);
