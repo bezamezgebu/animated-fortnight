@@ -341,3 +341,6 @@ healthchecksdb
 
 # dist files from Web project build
 TechLibrary.Web/dist
+
+# don't commit db changes
+TechLibrary/techLibrary.db
