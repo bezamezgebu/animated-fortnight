@@ -108,11 +108,11 @@ namespace TechLibrary.Controllers
         }
 
         [HttpPost("create")]        
-        public async Task<IActionResult> createBook([FromBody]Book book)
+        public async Task<IActionResult> createBook([FromBody]BookRequest bookRequest)
         {
             _logger.LogInformation("create book");
 
-            var newBook = _mapper.Map<Book>(book);
+            var newBook = _mapper.Map<Book>(bookRequest);
 
             await _bookService.createBook(newBook);
 

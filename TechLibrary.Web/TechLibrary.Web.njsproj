@@ -38,6 +38,9 @@
     <Content Include="src\components\Home.vue" />
     <Content Include="package.json" />
     <Content Include="README.md" />
+    <Content Include="src\components\NewBook.vue">
+      <SubType>Code</SubType>
+    </Content>
     <Content Include="src\routes.js">
       <SubType>Code</SubType>
     </Content>

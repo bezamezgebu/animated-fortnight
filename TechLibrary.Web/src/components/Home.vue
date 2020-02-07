@@ -5,6 +5,7 @@
             <b-input-group-append>
                 <b-button variant="primary" v-on:click="updateAndRefresh">Search</b-button>
                 <b-button variant="primary" v-on:click="clearSearch">Clear search</b-button>
+                <b-button variant="primary" v-on:click="navigateToNewBook" v-if="!createMode">Create</b-button>
             </b-input-group-append>
         </div>
         <h1 v-if="noBooks">No results to display.</h1>
@@ -29,12 +30,12 @@
             <b-button v-on:click="startItem += 10" :disabled="isNextButtonDisabled" variant="primary">Next page</b-button>
             <p>Displaying items {{ startItem }} - {{ startItem + books.length - 1 }}</p>
         </div>
-
     </div>
 </template>
 
 <script>
     import axios from 'axios';
+    
 
     export default {
         name: 'Home',
@@ -52,14 +53,15 @@
             books: [],
             perPage: 10,
             startItem: 1,
-            searchText: ""
+            searchText: "",
+            createMode: false
         }),
 
         watch: {
             // re-fetch books data when startItem changes
             startItem: function () {
                 this.$refs.table.refresh()
-            }      
+            }
         },
 
         computed: {
@@ -107,8 +109,12 @@
 
             enterHandler() {
                 this.updateAndRefresh();
+            },
+
+            navigateToNewBook() {
+                this.$router.push({ name: "newBook" });
             }
-        }   
+        }
     }
 </script>
 
