@@ -19,9 +19,9 @@ namespace TechLibrary.Controllers.Tests
     public class BooksControllerTests
     {
 
-        private  Mock<ILogger<BooksController>> _mockLogger;
-        private  Mock<IBookService> _mockBookService;
-        private  Mock<IMapper> _mockMapper;
+        private Mock<ILogger<BooksController>> _mockLogger;
+        private Mock<IBookService> _mockBookService;
+        private Mock<IMapper> _mockMapper;
         private IMapper _mapper;
         private NullReferenceException _expectedException;
 
@@ -102,7 +102,7 @@ namespace TechLibrary.Controllers.Tests
             var sut = new BooksController(_mockLogger.Object, _mockBookService.Object, _mockMapper.Object);
 
             //  Act
-            var result = await sut.GetBooks(1,-2);
+            var result = await sut.GetBooks(1, -2);
 
             //  Assert
             _mockBookService.Verify(s => s.GetBooksAsync(), Times.Once, "Expected GetBooksAsync to have been called once");
@@ -345,40 +345,32 @@ namespace TechLibrary.Controllers.Tests
             Assert.That(returnedList.Count, Is.EqualTo(0));
         }
 
+        [Test()]
+        public async Task UpdateWithNonExistingId()
+        {
+            //  Arrange
+            var books = new List<Book> { new Book { BookId = 1 } };
+            _mockBookService.Setup(s => s.GetBooksAsync()).ReturnsAsync(books);
 
-        //[Test()]
-        //public async Task UpdateWithValidISBN()
-        //{
-        //    //  Arrange
-        //    var books = new List<Book>
-        //    {
-        //      new Book { BookId = 1, ISBN = "1234567890"},
-        //      new Book { BookId = 2, ISBN = "0987654321" },
-             
-        //    };
-        //    _mockBookService.Setup(s => s.GetBooksAsync()).ReturnsAsync(books);
+            var controller = new BooksController(_mockLogger.Object, _mockBookService.Object, _mockMapper.Object);
 
-        //    var sut = new BooksController(_mockLogger.Object, _mockBookService.Object, _mapper);
-           
-        //    //  Act
-        //    var result = await sut.UpdateById(2,Book.Equals("747383839");
+            //  Act
+            var bookRequest = new BookRequest();
+            bookRequest.Title = "my updated title";
+            var result = await controller.UpdateById(2, bookRequest);
 
-        //    //  Assert
-        //    _mockBookService.Verify(s => s.GetBooksAsync(), Times.Once, "Expected GetBooksAsync to have been called once");
+            //  Assert
+            _mockBookService.Verify(s => s.GetBooksAsync(), Times.Once, "Expected GetBooksAsync to have been called once");
 
-        //    var okResult = result as OkObjectResult;
+            var badRequestResult = result as BadRequestObjectResult;
 
-        //    // ensure that the cast to OkObjectResult succeeded
-        //    Assert.IsNotNull(okResult);
-        //    Assert.That(okResult is OkObjectResult);
+            // ensure that the cast to OkObjectResult succeeded
+            Assert.IsNotNull(badRequestResult);
+            Assert.That(badRequestResult is BadRequestObjectResult);
 
-        //    // verify that the response was 200 OK
-        //    Assert.That(okResult.StatusCode, Is.EqualTo(StatusCodes.Status200OK));
+            // verify that the response was 400
+            Assert.That(badRequestResult.StatusCode, Is.EqualTo(StatusCodes.Status400BadRequest));
 
-        //    // verify that 1 item was returned
-        //    Assert.That(okResult.Value is List<BookResponse>);
-        //    var returnedList = okResult.Value as List<BookResponse>;
-        //    Assert.That(returnedList.Count, Is.EqualTo(1));
-        //}
+        }
     }
 }
