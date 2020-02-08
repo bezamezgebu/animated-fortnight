@@ -115,17 +115,23 @@ namespace TechLibrary.Controllers
         {
             var allBooks = await _bookService.GetBooksAsync();
 
-            foreach (Book bookid in allBooks)
+            bool foundMatchingBook = false;
+            foreach (Book b in allBooks)
             {
-                //if the book id does not exist
-                if (!(bookid.BookId.Equals(id)))
+                if (id == b.BookId)
                 {
-                    return BadRequest("ID does not exist.");
+                    foundMatchingBook = true;
+                    break;
                 }
             }
 
+            if (!foundMatchingBook)
+            {
+                // book with the requested ID doesn't exist
+                return BadRequest("Update failed - Book with ID " + id + " not found.");
+            }
 
-            _logger.LogInformation("update book");
+            _logger.LogInformation("updating book " + id);
 
             var book = _mapper.Map<Book>(bookRequest);
 
