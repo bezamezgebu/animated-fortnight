@@ -255,7 +255,7 @@ namespace TechLibrary.Controllers.Tests
             var sut = new BooksController(_mockLogger.Object, _mockBookService.Object, _mapper);
 
             //  Act
-            var result = await sut.GetBooksByTitle("Unity");
+            var result = await sut.GetBooksByTitle("Unity", 1, 1);
 
             //  Assert
             _mockBookService.Verify(s => s.GetBooksAsync(), Times.Once, "Expected GetBooksAsync to have been called once");
@@ -290,7 +290,7 @@ namespace TechLibrary.Controllers.Tests
             var sut = new BooksController(_mockLogger.Object, _mockBookService.Object, _mapper);
 
             //  Act
-            var result = await sut.GetBooksByTitle("uNiTy");
+            var result = await sut.GetBooksByTitle("uNiTy", 1, 1);
 
             //  Assert
             _mockBookService.Verify(s => s.GetBooksAsync(), Times.Once, "Expected GetBooksAsync to have been called once");
@@ -325,7 +325,7 @@ namespace TechLibrary.Controllers.Tests
             var sut = new BooksController(_mockLogger.Object, _mockBookService.Object, _mapper);
 
             //  Act
-            var result = await sut.GetBooksByTitle("hseknf");
+            var result = await sut.GetBooksByTitle("hseknf", 1, 1);
 
             //  Assert
             _mockBookService.Verify(s => s.GetBooksAsync(), Times.Once, "Expected GetBooksAsync to have been called once");

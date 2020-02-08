@@ -6,9 +6,6 @@ using AutoMapper;
 using TechLibrary.Domain;
 using TechLibrary.Models;
 using TechLibrary.Services;
-using System.Linq;
-using System.Collections.Generic;
-using Microsoft.EntityFrameworkCore;
 
 namespace TechLibrary.Controllers
 {
@@ -35,7 +32,7 @@ namespace TechLibrary.Controllers
 
             var books = await _bookService.GetBooksAsync();
 
-            if (!(start == 0 && count == 0)) // client has requested paging
+            if (!(start == 0 && count == 0)) // client has requested paging 
             {
                 if (count < 1 || start < 1)
                 {
@@ -80,7 +77,7 @@ namespace TechLibrary.Controllers
             {
                 if (count < 1 || start < 1)
                 {
-                    return BadRequest("start and count parameters must both be greater than 0");
+                    return BadRequest("start and count parameters must both be greater than 0.");
                 }
 
                 if (count > filteredList.Count - start)
@@ -116,6 +113,18 @@ namespace TechLibrary.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateById(int id, [FromBody]BookRequest bookRequest)
         {
+            var allBooks = await _bookService.GetBooksAsync();
+
+            foreach (Book bookid in allBooks)
+            {
+                //if the book id does not exist
+                if (!(bookid.BookId.Equals(id)))
+                {
+                    return BadRequest("ID does not exist.");
+                }
+            }
+
+
             _logger.LogInformation("update book");
 
             var book = _mapper.Map<Book>(bookRequest);
